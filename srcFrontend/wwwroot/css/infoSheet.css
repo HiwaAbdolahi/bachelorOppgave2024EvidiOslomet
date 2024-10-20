@@ -1,0 +1,259 @@
+/*Fonts*/
+
+@font-face {
+    font-family: 'Traffolight';
+    src: url('../Fonts/Traffolight.otf') format('otf');
+}
+
+/*Classes*/
+
+body.bodyStyle{
+    background-color: #0AB0A6 !important;
+    font-family: TraffoLight, Tahoma, sans-serif;
+}
+
+.bg-feeds:before{
+    background-image: url("../Images/UntitledbgCamera.png");
+    
+}
+
+.button{
+    background-color: #07978E !important;
+    border-radius: 20px !important;
+    border: none !important;
+}
+
+.button:hover{
+    background-color: #1f4f4f !important;
+}
+
+.cardContainer{
+    margin-left: 15px;
+    border-top-right-radius: 20px !important;
+    border-top-left-radius: 20px !important;
+}
+
+.card-header-positive{
+    background-color: rgba(4, 101, 94, 0.7) !important;
+    color: rgba(152, 233, 233) !important; ;
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+}
+
+.card-header-negative{
+    background-color: rgba(152, 233, 233, 0.7) !important;
+    color: rgba(4, 101, 94) !important; ;
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+}
+
+.cardImages{
+    max-width: 20px !important;
+    float: right;
+}
+
+div.cardPositive{
+    animation-name: fadeIn !important;
+    grid-area: auto !important;
+    border-radius: 20px;
+    background-color: rgba(152, 233, 233, 0.7) !important;
+}
+
+div.cardNegative{
+    animation-name: fadeIn !important;
+    grid-area: auto !important;
+    background-color: rgba(7, 151, 142, 0.7) !important;
+    border-radius: 20px;
+}
+
+.create_elements{
+    border-radius: 20px;
+    margin: 10px;
+}
+
+#partial_create{
+    background-color: #04655e !important;
+    border-radius: 20px;
+    margin: 10px;
+    justify-content: center;
+}
+
+.dotImages{
+    max-width: 10px;
+    max-height: 10px;
+    float: right;
+}
+
+.modal-content{
+    height: 50% !important;
+    background-color: #1f4f4f !important;
+}
+
+.form-control{
+    margin: 10px;
+}
+
+.edit-content{
+    padding: 20px;
+}
+
+.employee-name{
+
+}
+
+.fa-edit:hover {
+    color: white;
+}
+
+.fa-trash:hover{
+    color: red;
+}
+
+.filterField{
+    background-color: #256060 !important;
+    border-radius: 20px;
+}
+
+.form-check-input{
+    margin-top: 11px;
+    margin-left: 2px;
+}
+
+.headers{
+    color: #98E9E9;
+}
+
+.icon{
+    width: 30px;
+    height: auto;
+    float: left;
+}
+
+.infoContainer {
+    position: relative;
+    border-radius: 20px;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+}
+
+.infoContainer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: url('../Images/EvidiLogo.jpeg');
+    opacity: 9%;
+    z-index: -1;
+    border-radius: inherit;
+}
+
+.infoHeader{
+    color: #07978E;
+    background-color: #98E9E9;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    opacity: 50%;
+    text-align: center;
+    font-weight: lighter;
+}
+
+.logo{
+    width: 50px;
+    height: auto;
+}
+
+.navbar{
+    color: #98E9E9 !important;
+    background-color: #1f4f4f !important;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.nav-link{
+    color: #98E9E9 !important;
+}
+
+.nav-link:hover{
+    color: #07978E !important;
+}
+
+.navbar-brand{
+    color: #98E9E9 !important;;
+}
+
+
+.parentContainer{
+    margin:10px;
+}
+
+.searchBar{
+    border: 2px solid #07978E !important;
+    border-radius: 20px;
+    background-color: #98E9E9;
+    margin-top: 10px;
+}
+
+.text-numbers{
+    color: #98E9E9 !important;
+    margin-top: 10px;
+    background-color: #256060;
+    border-radius: 150px;
+    padding: 10px;
+}
+
+.toolGrid{
+    justify-content: center;
+    background-color: #1f4f4f;
+    border-radius: 20px;
+    max-width: 20%;
+}
+
+.resultDiv {
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px;
+    animation: popin 0.5s ease forwards;
+    width: 60% !important;
+}
+
+.row{
+    min-width: 100%;
+}
+
+.videoStyle{
+    width: 60%;
+    height: auto;
+    border-radius: 20px;
+}
+
+.view-checkbox{
+    justify-content: center;
+    float: left;
+    margin: 10px;
+}
+
+/*Animations*/
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes popin {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

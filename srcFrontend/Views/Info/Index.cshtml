@@ -1,0 +1,344 @@
+﻿@model (List<srcFrontend.Models.Employee>? checkedInEmployees, List<srcFrontend.Models.Employee>? checkedOutEmployees, srcFrontend.Models.Employee employee)
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="parentContainer">
+    <div class="row">
+        <div class="col infoContainer">
+            <div class="infoHeader">
+                <div class="form-check form-switch view-checkbox" title="Fullscreen">
+                    <label for="flexSwitchCheckDefault"><img class="icon" src="Images/fullscreen.png" alt=""></label>
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                </div>
+                <div class="form-check form-switch view-checkbox" title="Auto refresh the infoscreen">
+                    <label for="flexSwitchCheckDefault"><img class="icon" src="Images/reload.png" alt=""></label>
+                    <input class="form-check-input" type="checkbox" id="flexSwitchReload">
+                </div>
+                <h1 style="visibility: hidden">PÅ KONTORET:</h1>
+            </div>
+
+            <div id="partial_create" style="display: none">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <form id="createEmployeeForm" style="margin-left: 10px" onsubmit="return validateForm(event)">
+                    <div class="row mb-2">
+                        <label for="firstName" class="col-sm-2 col-form-label ps-3">First Name</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" id="firstName" placeholder="Enter first name">
+                            <small id="firstNameError" class="form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="lastName" class="col-sm-2 col-form-label ps-3">Last Name</label>
+                        <div class="col-sm-9">
+                            <input class="form-control" type="text" id="lastName" placeholder="Enter last name">
+                            <small id="lastNameError" class="form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="formFileMultiple" class="form-label" style="font-size: 18px; font-weight: bold; color: #222;">Upload Files</label>
+                        <div class="input-group">
+                            <input type="file" class="form-control" id="formFileMultiple" multiple style="display: none;">
+                            <label class="input-group-text btn btn-primary" for="formFileMultiple" style="cursor: pointer;">Choose Files</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="department" class="form-label" style="font-size: 18px; font-weight: bold; color: #333;">Department</label>
+                        <div class="input-group">
+                            <select class="form-select" id="department" style="border-radius: 10px; font-size: 20px;">
+                                <option value="">Select department</option>
+                                <option value="Research & Development">Research & Development</option>
+                                <option value="Consulting">Consulting</option>
+                                <option value="Programmers">Programmers</option>
+                                <option value="Cybersecurity">Cybersecurity</option>
+                            </select>
+                            <small id="departmentError" class="form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <style>
+                        .form-check-input:checked + .form-check-label.btn {
+                            background-color: #007bff;
+                            color: #fff;
+                        }
+                    </style>
+                    <div class="row mb-3">
+                        <label class="col-sm-2 col-form-label ps-3" style="font-size: 18px; font-weight: bold; color: #333;">Role</label>
+                        <div class="col-sm-10">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input visually-hidden" type="radio" name="role" id="management" value="Management">
+                                <label class="form-check-label btn btn-outline-primary" for="management">Management</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input visually-hidden" type="radio" name="role" id="junior" value="Junior">
+                                <label class="form-check-label btn btn-outline-primary" for="junior">Junior</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input visually-hidden" type="radio" name="role" id="senior" value="Senior">
+                                <label class="form-check-label btn btn-outline-primary" for="senior">Senior</label>
+                            </div>
+                            <small id="roleError" class="form-text text-danger"></small>
+                        </div>
+                    </div>
+                    <div class="mb-3" style="margin-left: 65px">
+                        <button type="submit" class="btn btn-outline-primary btn-lg rounded-pill shadow" style="width: 93%">CREATE</button>
+                    </div>
+                </form>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div id="partial_work" class="justify-content-center">@await Html.PartialAsync("_InfoPartial", Model.checkedInEmployees)</div>
+            <div id="partial_remote" class="justify-content-center">@await Html.PartialAsync("_InfoPartialRemote", Model.checkedOutEmployees)</div>
+        </div>
+        <div class="col-3 ml-2 toolGrid">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control searchBar" placeholder="Søk..." aria-label="Recipient's username" aria-describedby="button-addon2" id="searchInput" onchange="searchEmployees()">
+            </div>
+            <div class="filterField">
+                <h1 class="infoHeader">Filter:</h1>
+                <div class="m-2">
+                    <span class="text-light">Sort by:</span><br>
+                    <select class="form-select" id="inputGroupSelect01" style="width: 93%">
+                        <option selected value="Default">Default</option>
+                        <option value="1">Last Updated</option>
+                        <option value="2">Alphabetically</option>
+                    </select>
+                </div>
+                <div class="m-2">
+                    <span class="text-light">Department:</span><br>
+                    <select class="form-select" id="inputGroupSelect02" style="width: 93%">
+                        <option selected value="Default">Default</option>
+                        <option value="Research & Development">Research & Development</option>
+                        <option value="Consulting">Consulting</option>
+                        <option value="Programmers">Programmers</option>
+                        <option value="Cybersecurity">Cybersecurity</option>
+                    </select>
+                </div>
+                <div class="m-2">
+                    <span class="text-light">Role:</span><br>
+                    <select class="form-select" id="inputGroupSelect03" style="width: 93%">
+                        <option selected value="Default">Default</option>
+                        <option value="Management">Management</option>
+                        <option value="Junior">Junior</option>
+                        <option value="Senior">Senior</option>
+                    </select>
+                </div>
+                <button id="filterButton" class="btn btn-dark m-2 button" style="width: 93%">FILTER</button>
+            </div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="filterField mt-3">
+                    <h1 class="infoHeader">Admin:</h1>
+                    <button id="createButton" class="btn btn-dark m-2 button" style="width: 93%">CREATE</button>
+                    <button onclick="retrainAi()" class="btn btn-dark m-2 button" style="width: 93%">RETRAIN AI</button>
+                </div>
+            }
+            <h1 class="text-numbers">TOTAL:<br> <span style="font-size:10vw">@Model.checkedInEmployees.Count</span></h1>
+        </div>
+    </div>
+</div>
+
+@model (List<srcFrontend.Models.Employee>? checkedInEmployees, List<srcFrontend.Models.Employee>? checkedOutEmployees, srcFrontend.Models.Employee employee)
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script>
+    var apiUrl = '@ViewBag.ApiUrl';
+
+    function filterEmployees() {
+        var sortBy = document.getElementById("inputGroupSelect01").value;
+        var department = document.getElementById("inputGroupSelect02").value;
+        var role = document.getElementById("inputGroupSelect03").value;
+
+        $.ajax({
+            type: 'GET',
+            url: '/Info/FilterEmployeesFront',
+            data: { sortBy: sortBy, department: department, role: role, checker: true, partialName: "_InfoPartialRemote" },
+            success: function (data) {
+                $('#partial_work').html(data);
+            },
+            error: function () {
+                alert('An error occurred while filtering employees.');
+            }
+        });
+        $.ajax({
+            type: 'GET',
+            url: 'Info/FilterEmployeesFront',
+            data: { sortBy: sortBy, department: department, role: role, checker: false, partialName: "_InfoPartialRemote" },
+            success: function (data) {
+                console.log(data);
+                $('#partial_remote').html(data);
+            },
+            error: function () {
+                alert('An error occurred while filtering employees.');
+            }
+        });
+    }
+
+    function validateForm(event) {
+        let valid = true;
+
+        // Validate first name
+        const firstName = document.getElementById("firstName").value.trim();
+        const firstNameError = document.getElementById("firstNameError");
+        if (firstName === "" || /\d/.test(firstName)) {
+            firstNameError.innerText = "First name must not be empty or contain numbers.";
+            valid = false;
+        } else {
+            firstNameError.innerText = "";
+        }
+
+        // Validate last name
+        const lastName = document.getElementById("lastName").value.trim();
+        const lastNameError = document.getElementById("lastNameError");
+        if (lastName === "" || /\d/.test(lastName)) {
+            lastNameError.innerText = "Last name must not be empty or contain numbers.";
+            valid = false;
+        } else {
+            lastNameError.innerText = "";
+        }
+
+        // Validate department
+        const department = document.getElementById("department").value;
+        const departmentError = document.getElementById("departmentError");
+        if (department === "") {
+            departmentError.innerText = "You must select a department.";
+            valid = false;
+        } else {
+            departmentError.innerText = "";
+        }
+
+        // Validate role
+        const roleManagement = document.getElementById("management").checked;
+        const roleJunior = document.getElementById("junior").checked;
+        const roleSenior = document.getElementById("senior").checked;
+        const roleError = document.getElementById("roleError");
+        if (!roleManagement && !roleJunior && !roleSenior) {
+            roleError.innerText = "You must select a role.";
+            valid = false;
+        } else {
+            roleError.innerText = "";
+        }
+
+        // Prevent form submission if validation fails
+        if (!valid) {
+            event.preventDefault();
+        }
+
+        return valid;
+    }
+
+    $(document).on("submit", "#createEmployeeForm", function (event) {
+        event.preventDefault();
+
+        if (!validateForm(event)) {
+            return;
+        }
+
+        var formData = new FormData();
+        var files = $('#formFileMultiple')[0].files;
+        for (var i = 0; i < files.length; i++) {
+            formData.append('files', files[i]);
+            console.log(files[i])
+        }
+
+        formData.append('id', generateGuid());
+        formData.append('personId', generateGuid());
+        formData.append('personFirstName', $('#firstName').val());
+        formData.append('personLastName', $('#lastName').val());
+        formData.append('department', $('#department').val());
+        formData.append('role', $('input[name="role"]:checked').val());
+
+        console.log(formData.files);
+
+        $.ajax({
+            type: 'POST',
+            url: apiUrl + '/Info/CreateEmployee',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                document.getElementById('partial_create').style.display = 'none';
+                alert("Employee created successfully");
+                filterEmployees();
+            },
+            error: function () {
+                alert('An error occurred while creating the employee.');
+            }
+        });
+    });
+
+    function generateGuid() {
+        // Generate a random UUID following RFC4122 version 4
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0,
+                v = c === 'x' ? r : (r & 0x3 | 0x8);
+            return v.toString(16);
+        });
+    }
+
+    $(document).ready(function () {
+        $('#flexSwitchCheckDefault').change(function () {
+            if ($(this).is(':checked')) {
+                $('.navbar').hide();
+                $('.toolGrid').hide();
+            } else {
+                $('.navbar').show();
+                $('.toolGrid').show();
+            }
+        });
+    });
+
+    $('#flexSwitchReload').change(function () {
+        if ($(this).is(':checked')) {
+            intervalId = setInterval(function () {
+                filterEmployees();
+            }, 5000);
+        }
+        else {
+            clearInterval(intervalId);
+        }
+    });
+
+    function showCreateForm() {
+        document.getElementById('partial_create').style.display = 'block';
+    }
+
+    document.getElementById("filterButton").addEventListener("click", filterEmployees);
+    document.getElementById("createButton").addEventListener("click", showCreateForm);
+</script>
+

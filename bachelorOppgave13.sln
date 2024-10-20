@@ -1,0 +1,31 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34511.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "bachelorOppgave13", "src\bachelorOppgave13.csproj", "{B3EBA445-6568-4B80-A49A-3A6ABD3A1282}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "srcFrontend", "srcFrontend\srcFrontend.csproj", "{6CE12D9B-7E15-45CF-9601-3C309CA4F629}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B3EBA445-6568-4B80-A49A-3A6ABD3A1282}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3EBA445-6568-4B80-A49A-3A6ABD3A1282}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3EBA445-6568-4B80-A49A-3A6ABD3A1282}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3EBA445-6568-4B80-A49A-3A6ABD3A1282}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CE12D9B-7E15-45CF-9601-3C309CA4F629}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CE12D9B-7E15-45CF-9601-3C309CA4F629}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CE12D9B-7E15-45CF-9601-3C309CA4F629}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CE12D9B-7E15-45CF-9601-3C309CA4F629}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ABCA07F6-AFAE-4755-BC26-2D7138A411F8}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,205 @@
+name: 'FaceRecognitionPipeline'
+
+trigger: 
+- master
+
+pool: 
+ vmImage: 'ubuntu-latest'
+
+variables: 
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  dotNetFramework: 'net6.0'
+  dotNetVersion: '6.0.x'
+  vmImageName: 'ubuntu-latest'
+  resourceGroupName: 'bachelor-gruppe13-dev-rg'
+  serviceConnectionName: 'SC-CommunicateBachelor&Trainee-gr13'
+  location: 'westeurope'
+
+stages:
+ - stage: Deploy
+   displayName: 'Deploy'
+   jobs:
+    - job: build
+      displayName: 'Build Solution'
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+       - task: DotNetCoreCLI@2
+         displayName: 'restore'
+         inputs:
+           command: 'restore'
+           projects: '**/*.csproj'
+          
+       - task: DotNetCoreCLI@2
+         displayName: 'build backend project'
+         inputs:
+            command: 'build'
+            projects: '**/bachelorOppgave13.csproj'
+            arguments: '--configuration Release --no-restore'
+
+       - task: DotNetCoreCLI@2
+         displayName: 'build frontend project'
+         inputs:
+            command: 'build'
+            projects: '**/srcFrontend.csproj'
+            arguments: '--configuration Release --no-restore'
+
+       - task: DotNetCoreCLI@2
+         displayName: 'Publish project(s)'
+         inputs:
+            command: 'publish'
+            projects: '$(Build.SourcesDirectory)/**/*.csproj'
+            arguments: '--no-restore --no-build --configuration Release --output $(build.ArtifactStagingDirectory)'
+            zipAfterPublish: true
+            publishWebProjects: false
+
+       - task: CopyFiles@2
+         displayName: 'Copy bicep files'
+         inputs:
+           SourceFolder: '$(Build.SourcesDirectory)'
+           Contents: |
+            **/infrastructure/**
+           TargetFolder: '$(build.ArtifactStagingDirectory)/'
+
+
+       - task: PublishBuildArtifacts@1
+         displayName: 'Publish Artifact'
+         inputs:
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          ArtifactName: 'drop'
+          publishLocation: 'Container'
+
+    - job: DeployToAzure
+      displayName: 'Deploy to Azure'
+      dependsOn: build
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+        - task: DownloadBuildArtifacts@1
+          inputs:
+            buildType: 'current'
+            downloadType: 'single'
+            artifactName: 'drop'
+            downloadPath: '$(System.ArtifactsDirectory)'
+            
+        - task: AzureCLI@2
+          displayName: 'Deploy bicep'
+          inputs:
+            azureSubscription: 'SC-CommunicateBachelor&Trainee-gr13'
+            scriptType: pscore
+            scriptLocation: inlineScript
+            inlineScript: |
+              az --version
+              az deployment group create --mode Incremental --resource-group 'bachelor-gruppe13-dev-rg' --template-file $(Pipeline.Workspace)/a/drop/infrastructure/main.bicep
+                
+        - task: AzureRmWebAppDeployment@4
+          displayName: 'Deploy Web App'
+          inputs:
+            azureSubscription: 'SC-CommunicateBachelor&Trainee-gr13'
+            appType: 'webApp'
+            WebAppName: 'bachelor13-wa'
+            packageForLinux: '$(Build.ArtifactStagingDirectory)/**/src.zip'
+            enableCustomDeployment: true
+            DeploymentType: zipDeploy
+            
+        - task: AzureRmWebAppDeployment@4
+          displayName: 'Deploy Frontend Web App'
+          inputs:
+            azureSubscription: 'SC-CommunicateBachelor&Trainee-gr13'
+            appType: 'webApp'
+            WebAppName: 'bachelor13-fwa'
+            packageForLinux: '$(Build.ArtifactStagingDirectory)/**/srcFrontend.zip'
+            enableCustomDeployment: true
+            DeploymentType: zipDeploy
+            
+        - task: AzureAppServiceSettings@1
+          displayName: "Azure Backend Webapp"
+          inputs:
+            azureSubscription: 'SC-CommunicateBachelor&Trainee-gr13'
+            appName: "bachelor13-wa"
+            appSettings: |
+              [
+                {
+                  "name": "Logging__LogLevel__Default",
+                  "value": "Information",
+                  "slotSetting": false
+                },
+                {
+                  "name": "Logging__LogLevel__Microsoft.AspNetCore",
+                  "value": "Warning",
+                  "slotSetting": false
+                },
+                {
+                  "name": "CosmosEndpointUri",
+                  "value": "https://bachelor13db.documents.azure.com:443/",
+                  "slotSetting": false
+                },
+                {
+                  "name": "CosmosPrimaryKey",
+                  "value": "uYcNfxn2ZJwBCtgvJ3wDvf2njCzlSq7NWKTQzLw3kZysdj6aKJpjWRFdmiPs5pEmmAQlZQ7tkB0AACDbQGBrWw",
+                  "slotSetting": false
+                },
+                {
+                  "name": "GroupID",
+                  "value": "my-person-group20123948574834",
+                  "slotSetting": false
+                },  
+                {
+                  "name": "SubscriptionKey",
+                  "value": "6920e2f5fcfb45dd897f754d60fb7bc8",
+                  "slotSetting": false
+                }, 
+                {
+                  "name": "Endpoint",
+                  "value": "https://bachelor13face.cognitiveservices.azure.com/",
+                  "slotSetting": false
+                },    
+                {
+                  "name": "BlobConnectionString",
+                  "value": "DefaultEndpointsProtocol=https;AccountName=bachelor13blob;AccountKey=fM/AMbvzOAmVNbikgHQyAFFO4t3CUPV2Noet+eQL+3ciWoHPakdzBqYuGQXlj2bsY7860z1fJjFp+AStijOl4g==;EndpointSuffix=core.windows.net",
+                  "slotSetting": false
+                }    
+              ]
+              
+        - task: AzureAppServiceSettings@1
+          displayName: "Azure Frontend Webapp"
+          inputs:
+            azureSubscription: 'SC-CommunicateBachelor&Trainee-gr13'
+            appName: "bachelor13-fwa"
+            appSettings: |
+              [
+                {
+                  "name": "Logging__LogLevel__Default",
+                  "value": "Information",
+                  "slotSetting": false
+                },
+                {
+                  "name": "Logging__LogLevel__Microsoft.AspNetCore",
+                  "value": "Warning",
+                  "slotSetting": false
+                },
+                {
+                  "name": "ConnectionStrings__UserDbContextConnection",
+                  "value": "Data Source=UserDatabase.db",
+                  "slotSetting": false
+                },
+                {
+                  "name": "ApiUrl",
+                  "value": "https://bachelor13-wa.azurewebsites.net",
+                  "slotSetting": false
+                }   
+                ]      
+        
+
+        # - task: AzureRmWebAppDeployment@4
+        #   displayName: 'Deploy to Secondary Web App'
+        #   inputs:
+        #     ConnectionType: 'AzureRM'
+        #     azureSubscription: 'SC-CommunicateBachelor&Trainee-gr13'
+        #     appType: 'webApp'
+        #     WebAppName: 'FaceRecog-sr'
+        #     packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+        #     enableCustomDeployment: true
+        #     deploymentMethod: 'zipDeploy'

@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - Facerecognition</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/ea12ad0d2d.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+    <link rel="stylesheet" type="text/css" href="~/css/infoSheet.css"/>
+</head>
+<body id="bg_Body" class="bodyStyle">
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <img class="logo" src="Images/EvidiLogo.jpeg" alt="">
+            <img class="logo" src="Images/OslometLight.png" alt="">
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Face Recognition</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Inngang(Kamera1)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Exit" asp-action="Index">Utgang(Kamera2)</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="Info" asp-action="Index">Infotavle</a>
+                    </li>
+                </ul>
+                    <partial name="_LoginPartial" />            <!--Addet-->
+            </div>
+        </div>
+    </nav>
+
+    <div class="parentContainer">
+        <main role="main" class="">
+            @RenderBody()
+            @RenderSection("BackgroundImage", required: false)
+            @RenderSection("Scripts", required: false)
+        </main>
+    </div>
+    <script >
+    var apiUrl = '@ViewBag.ApiUrl';
+    function callRecognition(imageDataUrl) {
+        var requestData = {
+            imageDataUrl: imageDataUrl
+        };
+        console.log(requestData);
+
+        $.ajax({
+            type: 'POST',
+            url: apiUrl + '/Home/PerformFaceRecognitionAsync',
+            contentType: 'application/json', 
+            data: JSON.stringify(requestData),
+            success: function (data) {
+                displayResult(data.message);
+            },
+            error: function () {
+               
+            }
+        });
+    }
+    function callRecognitionExit(imageDataUrl){
+        var requestData = {imageDataUrl: imageDataUrl};
+        console.log(requestData);
+    
+        $.ajax({
+            type: 'POST',
+            url: apiUrl + '/Exit/PerformFaceRecognitionAsync',
+            contentType: 'application/json',
+            data: JSON.stringify(requestData),
+            success: function (data) {
+                displayResultExit(data.message);
+            },
+            error: function () {
+                
+            }
+        });
+    }
+    
+    function retrainAi(){
+        $.ajax({
+        type: 'GET',
+        url: apiUrl + '/Home/SetupPersonGroup',
+        contentType: 'application/json',
+        success: function (data) {
+              
+            alert("Ai Retrained");
+             },
+             error: function () {
+                      
+            alert('An error occurred while calling the action.');
+
+        }
+        });
+    }
+    </script>
+    <script src="js/script.js"></script>
+
+</body>
+</html>

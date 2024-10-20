@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Home page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section BackgroundImage {
+    <style>
+        .bodyStyle {
+            background-image: url('Images/UntitledbgCamera.png') !important;
+        }
+    </style>
+}
+
+<div class="bg-feeds">
+
+    <div id="cameraFeed" class="justify-content-center text-center">
+        <video id="video" width="900" height=700 autoplay class="videoStyle">
+        </video>
+        <div id="resultDiv" class="justify-content-center text-center mt-3"></div>
+    </div>
+</div>
